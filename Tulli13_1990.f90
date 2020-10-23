@@ -89,12 +89,13 @@ call random_seed(size=O)
 
 
 open(167,file='raw_x.txt')
-do ut=1,int(Hi/2)
-read(167,*)E_levels(ut)
-enddo
-close(167)
+!do ut=1,int(Hi/2)
+!read(167,*)E_levels(ut)
+!enddo
+!close(167)
 do kn=1,int(Hi/2)
-knot_x(kn)=E_levels(int(Hi/2)-kn)
+!knot_x(kn)=E_levels(int(Hi/2)-kn)
+read(167,*) knot_x(kn)
 enddo
 
 
@@ -416,7 +417,7 @@ integer :: i,j,k,l
 U0=0.5*mass(1)*(omega**2)*(pos(1))**2
 U1=0.5*mass(1)*(omega**2)*(pos(1)-gh)**2+dG
 H(1,1)=U1-U0
-    do i=2,Hi-1
+    do i=2,Hi
         if (i.le.int(Hi/2)) then
                 H(1,i)=sqrt(Band_width*w_levels(i)/2)*Vr
                 H(i,1)=sqrt(Band_width*w_levels(i)/2)*Vr
@@ -424,12 +425,16 @@ H(1,1)=U1-U0
                 H(1,i)=sqrt(Band_width*w_levels(i-int(Hi/2))/2)*Vr
                 H(i,1)=sqrt(Band_width*w_levels(i-int(Hi/2))/2)*Vr
         end if
-        do j=2,Hi-1
+        do j=2,Hi
                 if (i.eq.j) then
-                        if (i.le.int(Hi/2)) then
-                                H(i,j)=-(Band_width/2)*(0.5+0.5*knot_x(i))
+                        if (i.le.(int(Hi/2)+1)) then
+!                                write(28,*)i,j,int(Hi/2)-i+2
+!                                write(28,*)knot_x(int(Hi/2)-i+2)
+                                H(i,j)=-(Band_width/2)*(0.5+0.5*knot_x(int(Hi/2)-i+2))
                         else
-                                H(i,j)=(Band_width/2)*(0.5+0.5*knot_x(Hi-i+1))
+ !                               write(28,*) i,j,i-int(Hi/2)-1
+ !                               write(28,*) knot_x(i-int(Hi/2)-1)
+                                H(i,j)=(Band_width/2)*(0.5+0.5*knot_x(i-int(Hi/2)-1))
                         end if
                 else
                         H(i,j)=0.0
